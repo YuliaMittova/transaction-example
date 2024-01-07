@@ -1,0 +1,37 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>false</withJansi>
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) %replace(%blue([messageId=%X{messageId}])){'\[messageId=\]', ''} %replace(%blue([correlationId=%X{correlationId}])){'\[correlationId=\]', ''} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>
+                {
+                  "service":"${APPLICATION_NAME:-transaction-project}",
+                  "env":"${ENVIRONMENT:-production}"
+                }
+            </customFields>
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <version>[ignore]</version>
+                <levelValue>[ignore]</levelValue>
+            </fieldNames>
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>
+                <appendLineSeparator>true</appendLineSeparator>
+                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter"></jsonFormatter>
+            </layout>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="${LOGBACK_APPENDER:-JSON}"/>
+    </root>
+</configuration>

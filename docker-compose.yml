@@ -1,0 +1,12 @@
+version: "3.2"
+services:
+  mongodb:
+    image: mongo:5.0
+    container_name: "mongodb"
+    ports:
+      - 27017:27017
+    volumes:
+      - ~/.docker-conf/mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongodb
+      - MONGO_INITDB_ROOT_PASSWORD=mongodb

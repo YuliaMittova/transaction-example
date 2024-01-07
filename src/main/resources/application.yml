@@ -1,0 +1,84 @@
+micronaut:
+  application:
+    name: transaction-service
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /**
+    versioning:
+      enabled: true
+      default-version: 1
+      header:
+        enabled: true
+        names:
+          - 'X-API-VERSION'
+          - 'Version'
+
+mongodb:
+  uri: ${MONGODB_URI:`mongodb://mongodb:mongodb@localhost:27017`}
+
+netty:
+  default:
+    allocator:
+      max-order: 3
+
+swagger-ui:
+  enabled: true
+
+jackson:
+  date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+  serialization:
+    writeDatesAsTimestamps: false
+  serialization-inclusion: non_null
+
+endpoints:
+  all:
+    path: management
+  loggers:
+    enabled: true
+    sensitive: false
+    write-sensitive: false
+  routes:
+    enabled: true
+    sensitive: false
+  health:
+    enabled: true
+    sensitive: false
+    details-visible: ANONYMOUS
+
+datasources:
+  default:
+    url: jdbc:mysql://localhost/exampleDB?generateSimpleParameterMetadata=true&zeroDateTimeBehavior=convertToNull&verifyServerCertificate=false&useSSL=false
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: secretpassword
+    schema-generate: CREATE_DROP
+    dialect: MYSQL
+    pooled: true
+    maximum-pool-size: 10
+    minimum-idle: 5
+    maximum-idle: 5
+    initial-size: 5
+---
+jpa:
+  default:
+    entity-scan:
+      packages: 'com.transaction.example.infra.entities'
+    properties:
+      hibernate:
+        bytecode:
+          provider: none
+        hbm2ddl:
+          auto: validate
+        show_sql: false
+
+flyway:
+  datasources:
+    default:
+      enabled: true
+      baseline-on-migrate: true
+      locations: classpath:db/migration
